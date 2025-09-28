@@ -5,12 +5,385 @@
   <title>Caio Marcatti - Whitepapers</title>
   <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
   <style>
-    body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; }
-    a { color: blue; text-decoration: underline; cursor: pointer; }
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans:wght@300;400;500;600&family=Playfair+Display:wght@500;700&display=swap');
+
+    :root {
+      color-scheme: light;
+      --bg-primary: #140027;
+      --bg-secondary: #2e124f;
+      --surface: rgba(255, 255, 255, 0.08);
+      --page: #f7f2ff;
+      --text-main: #2c1144;
+      --text-muted: #5a3f7a;
+      --accent: #7b4ed8;
+      --accent-soft: #c8b4ff;
+      --shadow: 0 50px 80px rgba(20, 0, 39, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(2rem, 6vw, 5rem) clamp(1.5rem, 4vw, 4rem);
+      background: radial-gradient(circle at 20% 20%, rgba(123, 78, 216, 0.18), transparent 40%),
+                  radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.08), transparent 35%),
+                  linear-gradient(130deg, var(--bg-primary), var(--bg-secondary));
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    body::before {
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><g fill="none" stroke="%2342277a" stroke-width="0.6"><path d="M0 100 Q 50 80 100 100 T 200 100"/><path d="M0 120 Q 50 100 100 120 T 200 120"/><path d="M0 140 Q 50 120 100 140 T 200 140"/></g></svg>');
+      opacity: 0.18;
+      mix-blend-mode: screen;
+    }
+
+    body::after {
+      background: radial-gradient(circle at 10% 90%, rgba(200, 180, 255, 0.14), transparent 50%),
+                  radial-gradient(circle at 70% 10%, rgba(91, 52, 170, 0.22), transparent 60%);
+      opacity: 0.8;
+    }
+
+    .layout {
+      width: min(1100px, 100%);
+      display: grid;
+      gap: clamp(1.5rem, 3vw, 2.5rem);
+    }
+
+    .book {
+      position: relative;
+      border-radius: 36px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(24px);
+      box-shadow: var(--shadow);
+      padding: clamp(2.8rem, 5vw, 4rem);
+      display: grid;
+      grid-template-columns: minmax(220px, 0.8fr) minmax(400px, 1fr);
+      gap: clamp(2rem, 3vw, 3.4rem);
+      overflow: hidden;
+    }
+
+    .book::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: clamp(80px, 14vw, 120px);
+      background: linear-gradient(145deg, rgba(35, 12, 61, 0.95), rgba(64, 27, 102, 0.7));
+      box-shadow: inset -12px 0 24px rgba(12, 0, 26, 0.25);
+      border-radius: 36px 0 0 36px;
+    }
+
+    .book__spine {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 1.6rem;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      color: rgba(255, 255, 255, 0.88);
+      z-index: 1;
+    }
+
+    .book__title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: clamp(1.6rem, 2.6vw, 2.3rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin: 0;
+      color: var(--accent-soft);
+    }
+
+    .book__meta {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-width: 16ch;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .book__bookmark {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.8rem 0.4rem 1rem;
+      background: rgba(200, 180, 255, 0.18);
+      border-radius: 999px;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .book__bookmark::before {
+      content: "✦";
+      font-size: 0.8rem;
+    }
+
+    .book__page {
+      position: relative;
+      background: var(--page);
+      border-radius: 28px;
+      box-shadow: inset 0 0 0 1px rgba(123, 78, 216, 0.12), inset 0 12px 25px rgba(123, 78, 216, 0.08);
+      padding: clamp(2rem, 3vw, 3rem);
+      color: var(--text-main);
+      overflow: hidden;
+    }
+
+    .book__page::before,
+    .book__page::after {
+      content: "";
+      position: absolute;
+      inset: 1.2rem;
+      border-radius: 22px;
+      pointer-events: none;
+    }
+
+    .book__page::before {
+      border: 1px solid rgba(123, 78, 216, 0.18);
+    }
+
+    .book__page::after {
+      inset: 1.2rem 1.2rem 1.6rem 1.2rem;
+      border-radius: 18px;
+      box-shadow: 0 40px 60px rgba(81, 45, 130, 0.12);
+      opacity: 0.4;
+    }
+
+    .book__page-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    #content {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: inherit;
+    }
+
+    #content h1,
+    #content h2,
+    #content h3,
+    #content h4,
+    #content h5,
+    #content h6 {
+      font-family: 'Playfair Display', serif;
+      color: var(--text-main);
+      margin-top: 2.2rem;
+      margin-bottom: 1rem;
+      letter-spacing: 0.04em;
+    }
+
+    #content h1 {
+      font-size: clamp(2.1rem, 3vw, 2.6rem);
+      margin-top: 0;
+      color: #3c1b63;
+    }
+
+    #content h2 {
+      font-size: clamp(1.6rem, 2.4vw, 2rem);
+      color: #4e2777;
+    }
+
+    #content h3 {
+      font-size: clamp(1.3rem, 2vw, 1.6rem);
+      color: #563083;
+    }
+
+    #content p {
+      margin: 1.2rem 0;
+      color: var(--text-muted);
+    }
+
+    #content ul,
+    #content ol {
+      margin: 1rem 0 1.6rem 1.4rem;
+      padding: 0;
+      color: var(--text-muted);
+    }
+
+    #content li {
+      padding-left: 0.4rem;
+      margin-bottom: 0.6rem;
+    }
+
+    #content blockquote {
+      margin: 1.6rem 0;
+      padding: 1.4rem 1.6rem;
+      background: rgba(123, 78, 216, 0.12);
+      border-left: 4px solid rgba(123, 78, 216, 0.8);
+      border-radius: 12px;
+      color: #432660;
+      font-style: italic;
+    }
+
+    #content code {
+      font-family: 'IBM Plex Mono', 'Fira Code', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+      background: rgba(123, 78, 216, 0.18);
+      padding: 0.15rem 0.35rem;
+      border-radius: 6px;
+      color: #2b0d4d;
+      font-size: 0.95em;
+    }
+
+    #content pre {
+      background: rgba(123, 78, 216, 0.15);
+      padding: 1.2rem 1.4rem;
+      border-radius: 14px;
+      overflow-x: auto;
+      box-shadow: inset 0 0 0 1px rgba(123, 78, 216, 0.12);
+    }
+
+    #content pre code {
+      background: transparent;
+      padding: 0;
+    }
+
+    #content a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    #content a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -0.15rem;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(123, 78, 216, 0), rgba(123, 78, 216, 0.8), rgba(123, 78, 216, 0));
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.3s ease;
+    }
+
+    #content a:hover {
+      color: #5426a8;
+    }
+
+    #content a:hover::after {
+      transform: scaleX(1);
+    }
+
+    #content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.8rem 0;
+      font-size: 0.95rem;
+    }
+
+    #content th,
+    #content td {
+      padding: 0.75rem 1rem;
+      border: 1px solid rgba(123, 78, 216, 0.16);
+      text-align: left;
+      color: var(--text-muted);
+    }
+
+    #content th {
+      background: rgba(123, 78, 216, 0.12);
+      color: #3c1b63;
+      font-weight: 600;
+    }
+
+    #content img {
+      max-width: 100%;
+      display: block;
+      margin: 2rem auto;
+      border-radius: 16px;
+      box-shadow: 0 18px 35px rgba(60, 27, 99, 0.14);
+    }
+
+    @media (max-width: 900px) {
+      body {
+        align-items: flex-start;
+      }
+
+      .book {
+        grid-template-columns: 1fr;
+        padding: clamp(2rem, 6vw, 3rem);
+      }
+
+      .book::before {
+        width: 100%;
+        height: clamp(120px, 28vw, 180px);
+        border-radius: 36px 36px 0 0;
+        box-shadow: inset 0 -12px 24px rgba(12, 0, 26, 0.25);
+      }
+
+      .book__spine {
+        flex-direction: row;
+        align-items: center;
+        gap: 1.4rem;
+      }
+
+      .book__meta {
+        max-width: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 2rem 1.2rem 3rem;
+      }
+
+      .book {
+        padding: 1.8rem;
+        border-radius: 28px;
+      }
+
+      .book__page {
+        border-radius: 22px;
+        padding: 1.8rem;
+      }
+
+      .book__page::before,
+      .book__page::after {
+        inset: 0.9rem;
+      }
+    }
   </style>
 </head>
 <body>
-  <div id="content">Carregando...</div>
+  <main class="layout" role="main">
+    <section class="book" aria-label="Whitepapers de Caio Marcatti">
+      <div class="book__spine" aria-hidden="true">
+        <span class="book__bookmark">Coleção Digital</span>
+        <div>
+          <h1 class="book__title">Whitepapers</h1>
+          <p class="book__meta">Explore as ideias, práticas e anotações de engenharia de Caio Marcatti.</p>
+        </div>
+      </div>
+      <div class="book__page" role="article">
+        <div class="book__page-content">
+          <div id="content">Carregando...</div>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <script>
     const md = window.markdownit({ html: true });
@@ -23,7 +396,7 @@
         document.getElementById("content").innerHTML = md.render(text);
         setupLinks();
       } catch (err) {
-        document.getElementById("content").innerHTML = `<p style="color:red">${err.message}</p>`;
+        document.getElementById("content").innerHTML = `<p style="color:crimson">${err.message}</p>`;
       }
     }
 
@@ -31,7 +404,7 @@
       document.querySelectorAll("#content a").forEach(link => {
         link.addEventListener("click", ev => {
           const href = link.getAttribute("href");
-          if (href.endsWith(".md")) {
+          if (href && href.endsWith(".md")) {
             ev.preventDefault();
             loadMarkdown(href);
             history.pushState({ file: href }, "", href.replace(".md", ".html"));
@@ -40,7 +413,6 @@
       });
     }
 
-    // Lida com back/forward do navegador
     window.addEventListener("popstate", ev => {
       if (ev.state && ev.state.file) {
         loadMarkdown(ev.state.file);
@@ -49,7 +421,6 @@
       }
     });
 
-    // Carrega a página inicial
     loadMarkdown("index.md");
   </script>
 </body>
