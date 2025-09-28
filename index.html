@@ -1,1 +1,56 @@
-oi
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Caio Marcatti - Whitepapers</title>
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; }
+    a { color: blue; text-decoration: underline; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div id="content">Carregando...</div>
+
+  <script>
+    const md = window.markdownit({ html: true });
+
+    async function loadMarkdown(file) {
+      try {
+        const response = await fetch(file);
+        if (!response.ok) throw new Error("Arquivo não encontrado: " + file);
+        const text = await response.text();
+        document.getElementById("content").innerHTML = md.render(text);
+        setupLinks();
+      } catch (err) {
+        document.getElementById("content").innerHTML = `<p style="color:red">${err.message}</p>`;
+      }
+    }
+
+    function setupLinks() {
+      document.querySelectorAll("#content a").forEach(link => {
+        link.addEventListener("click", ev => {
+          const href = link.getAttribute("href");
+          if (href.endsWith(".md")) {
+            ev.preventDefault();
+            loadMarkdown(href);
+            history.pushState({ file: href }, "", href.replace(".md", ".html"));
+          }
+        });
+      });
+    }
+
+    // Lida com back/forward do navegador
+    window.addEventListener("popstate", ev => {
+      if (ev.state && ev.state.file) {
+        loadMarkdown(ev.state.file);
+      } else {
+        loadMarkdown("index.md");
+      }
+    });
+
+    // Carrega a página inicial
+    loadMarkdown("index.md");
+  </script>
+</body>
+</html>
