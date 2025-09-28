@@ -13,10 +13,10 @@ Este projeto tem como objetivo centralizar todos mos meus aprendizados, facilita
 ## Artigos
 
 - **Containers**
-    - [A Importância de Fixar a Versão da Instalação dos Pacotes em um Container Docker](../../docs/whitepapers/container/fix-version/fix-version.md)
+    - [A Importância de Fixar a Versão da Instalação dos Pacotes em um Container Docker](../../whitepapers/container/fix-version/fix-version.md)
 
 - **Segurança em Software**
-    - [A Importância da Cadeia de Suprimentos na Proteção do Seu Código](../../docs/whitepapers/security/intro-supply-chain/intro-supply-chain.md)
+    - [A Importância da Cadeia de Suprimentos na Proteção do Seu Código](../../whitepapers/security/intro-supply-chain/intro-supply-chain.md)
 
 - **Cloud**
     - **Tags**
@@ -27,7 +27,7 @@ Este projeto tem como objetivo centralizar todos mos meus aprendizados, facilita
 
 - **Linguagens**
     - **Go**
-        - [`go get` em repositórios privados](../../docs/whitepapers/languages/go/go-get-private-repo.md) - Explica como forçar o uso de SSH ao usar go get com repositórios privados, evitando erros de permissão e problemas com proxies públicos.
+        - [`go get` em repositórios privados](../../whitepapers/languages/go/go-get-private-repo.md) - Explica como forçar o uso de SSH ao usar go get com repositórios privados, evitando erros de permissão e problemas com proxies públicos.
 
 - **Cloud**
     - [**Tags**](tags/readme.md) - As tags são ferramentas simples e extremamente poderosas para organização e gestão de recursos em ambientes de nuvem.
